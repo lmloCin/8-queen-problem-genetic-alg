@@ -12,7 +12,7 @@ def create_fathers():
     return prob_solve
 
 
-def fitness(ind):
+def fitness2(ind):
     fitness = 0
     for i in range(7):
         if (ind[i+ 1] == ind[i] + 1) or (ind[i+ 1] == ind[i] - 1):
@@ -21,7 +21,7 @@ def fitness(ind):
     return fitness
 
 
-def fitness2(ind):
+def fitness(ind):
     fitness = 0
     for i in range(len(ind)):
         col = ind[i]
@@ -115,7 +115,7 @@ fitness_solves = []
 for i in range(10):
     ind = create_fathers()
     possible_solves.append(ind)
-    fitness_solves.append(fitness2(ind))
+    fitness_solves.append(fitness(ind))
 
 
 best_fit = max(fitness_solves)
@@ -133,36 +133,36 @@ while best_fit < 28 :
             son1, son2 = recombination(father, mother)
             son1, son2 = mutation(son1), mutation(son2)
             sons.append(son1)
-            sons_fit.append(fitness2(son1))
+            sons_fit.append(fitness(son1))
             sons.append(son2)
-            sons_fit.append(fitness2(son2))
+            sons_fit.append(fitness(son2))
         elif chance == 2:
             father = possible_solves[random.randrange(0, 4)]
             mother = possible_solves[random.randrange(0, 4)]
             son1, son2 = recombination(father, mother)
             son1, son2 = mutation(son1), mutation(son2)
             sons.append(son1)
-            sons_fit.append(fitness2(son1))
+            sons_fit.append(fitness(son1))
             sons.append(son2)
-            sons_fit.append(fitness2(son2))
+            sons_fit.append(fitness(son2))
         elif chance == 3:
             father = possible_solves[random.randrange(0, 6)]
             mother = possible_solves[random.randrange(0, 6)]
             son1 , son2 = recombination(father, mother)
             son1, son2 = mutation(son1), mutation(son2)
             sons.append(son1)
-            sons_fit.append(fitness2(son1))
+            sons_fit.append(fitness(son1))
             sons.append(son2)
-            sons_fit.append(fitness2(son2))
+            sons_fit.append(fitness(son2))
         elif chance == 4:
             father = possible_solves[random.randrange(0, 8)]
             mother = possible_solves[random.randrange(0, 8)]
             son1, son2 = recombination(father, mother)
             son1, son2 = mutation(son1), mutation(son2)
             sons.append(son1)
-            sons_fit.append(fitness2(son1))
+            sons_fit.append(fitness(son1))
             sons.append(son2)
-            sons_fit.append(fitness2(son2))
+            sons_fit.append(fitness(son2))
     possible_solves = []
     fitness_solves = []
     for i in range(10):
@@ -182,5 +182,5 @@ while best_fit < 28 :
 
 best_fit = max(fitness_solves)
 best_sol = possible_solves[fitness_solves.index(best_fit)]
-print('\n' , best_sol, best_fit, 'interections:', interactions)
+print(f'best_solution: {best_sol} \nbest_fitness: {best_fit} \ninteractions_number: {interactions}')
 print_board(best_sol)
