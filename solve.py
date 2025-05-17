@@ -12,15 +12,6 @@ def create_fathers():
     return prob_solve
 
 
-def fitness2(ind):
-    fitness = 0
-    for i in range(7):
-        if (ind[i+ 1] == ind[i] + 1) or (ind[i+ 1] == ind[i] - 1):
-            fitness += 1
-    #return (1/(1 + fitness))
-    return fitness
-
-
 def fitness(ind):
     fitness = 0
     for i in range(len(ind)):
@@ -176,9 +167,6 @@ while best_fit < 28 :
     best_fit = max(fitness_solves)
     best_sol = possible_solves[fitness_solves.index(best_fit)]
             
-
-#for i in range(10):
-#    print(possible_solves[i], '', fitness_solves[i])
 
 best_fit = max(fitness_solves)
 best_sol = possible_solves[fitness_solves.index(best_fit)]
