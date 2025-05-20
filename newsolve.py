@@ -30,7 +30,7 @@ def fitness(ind):
 
 
 def mutation(ind, prob):
-    if random.randrange(1, 10) <=prob :
+    if random.randrange(1, 100) <=prob :
         random1 = random.choice(ind)
         index1 = ind.index(random1)
         ind.remove(random1)
@@ -47,7 +47,7 @@ def mutation(ind, prob):
 def recombination(father, mother, prob):
     son1 = []
     son2 = []
-    if random.randrange(1, 10) <=prob :
+    if random.randrange(1, 100) <=prob :
         for i in range(3):
             son1.append(father[i])
             son2.append(mother[i])
@@ -119,11 +119,11 @@ for i in range(population):
 avg_fit = sum(fitness_solves)/population
 best_fit = max(fitness_solves)
 best_sol = possible_solves[fitness_solves.index(best_fit)]
-print(f"Fitness médio_inicial:{avg_fit}, Fitness máximo_inicial: {best_fit}")
+print(f"Fitness médio_inicial: {avg_fit}\nFitness máximo_inicial: {best_fit}")
 
 
 interactions = 0
-while best_fit < 28 and fitness_count < 1000:
+while best_fit < 28 and fitness_count < 10000:
     interactions += 1
     sons = []
     sons_fit = []
@@ -134,60 +134,25 @@ while best_fit < 28 and fitness_count < 1000:
             random_factor = random.randrange(0, 100)
             possibles_parents.append(possible_solves[random_factor])
             possibles_parents_fitness.append(fitness_solves[random_factor])
-        father = possibles_parents.pop(max(possibles_parents_fitness))
-        possibles_parents_fitness.remove(max(possibles_parents_fitness))
-        mother = possibles_parents.pop(max(possibles_parents_fitness))
-        possibles_parents_fitness.remove(max(possibles_parents_fitness))
-        
+        father = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
+        mother = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
+        son1, son2 = recombination(father, mother, 90)
+        son1, son2 = mutation(son1, 40), mutation(son2, 40)
+        sons.append(son1)
+        sons_fit.append(fitness(son1))
+        sons.append(son2)
+        sons_fit.append(fitness(son2))
+        fitness_count += 2
 
-
-
-
-
-        chance = random.randrange(1,5)
-        if chance == 1:
-            father = possible_solves[random.randrange(0, 2)]
-            mother = possible_solves[random.randrange(0, 2)]
-            son1, son2 = recombination(father, mother, 9)
-            son1, son2 = mutation(son1, 4), mutation(son2, 4)
-            sons.append(son1)
-            sons_fit.append(fitness(son1))
-            sons.append(son2)
-            sons_fit.append(fitness(son2))
-        elif chance == 2:
-            father = possible_solves[random.randrange(0, 4)]
-            mother = possible_solves[random.randrange(0, 4)]
-            son1, son2 = recombination(father, mother, 9)
-            son1, son2 = mutation(son1, 4), mutation(son2, 4)
-            sons.append(son1)
-            sons_fit.append(fitness(son1))
-            sons.append(son2)
-            sons_fit.append(fitness(son2))
-        elif chance == 3:
-            father = possible_solves[random.randrange(0, 6)]
-            mother = possible_solves[random.randrange(0, 6)]
-            son1 , son2 = recombination(father, mother, 9)
-            son1, son2 = mutation(son1, 4), mutation(son2, 4)
-            sons.append(son1)
-            sons_fit.append(fitness(son1))
-            sons.append(son2)
-            sons_fit.append(fitness(son2))
-        elif chance == 4:
-            father = possible_solves[random.randrange(0, 8)]
-            mother = possible_solves[random.randrange(0, 8)]
-            son1, son2 = recombination(father, mother, 9)
-            son1, son2 = mutation(son1, 4), mutation(son2, 4)
-            sons.append(son1)
-            sons_fit.append(fitness(son1))
-            sons.append(son2)
-            sons_fit.append(fitness(son2))
-    possible_solves = []
+ 
+    for i in range(population): 
+        sons_fit.append(fitness_solves[i])
+        sons.append(possible_solves[i])
     fitness_solves = []
-    for i in range(10):
+    possible_solves = []
+    for i in range(population):
         sel_son_fit = max(sons_fit)
-        #print(sel_son_fit)
         selected_son = sons.pop(sons_fit.index(sel_son_fit))
-        #print(selected_son)
         sons_fit.remove(sel_son_fit)
         possible_solves.append(selected_son)
         fitness_solves.append(sel_son_fit)
@@ -198,5 +163,5 @@ while best_fit < 28 and fitness_count < 1000:
 avg_fit = sum(fitness_solves)/population
 best_fit = max(fitness_solves)
 best_sol = possible_solves[fitness_solves.index(best_fit)]
-print(f'best_solution: {best_sol} \nbest_fitness: {best_fit} \ninteractions_number: {interactions} \navg_end_fitness: {avg_fit}')
+print(f'best_solution: {best_sol} \nbest_fitness: {best_fit} \ninteractions_number: {interactions} \navg_end_fitness: {avg_fit}\nFitness_count:{fitness_count}')
 #print_board(best_sol)
