@@ -21,14 +21,14 @@ def bit_string_to_permutation(bit_string, num_bits_per_gene=3):
     return permutation
 
 def create_fathers():
-    prob_solve = []
-    p_vals = [0, 1, 2, 3, 4, 5, 6, 7]
+    father = ''
+    p_vals = ['000', '001', '010', '011', '100', '101', '110', '111']
     for i in range(8):
         random_num = random.choice(p_vals)
         p_vals.remove(random_num)
-        prob_solve.append(random_num)
+        father += random_num
 
-    return prob_solve
+    return father
 
 
 def fitness(ind):
@@ -195,6 +195,7 @@ fitness_solves = []
 population = 100
 for i in range(population):
     ind = create_fathers()
+    ind = bit_string_to_permutation(ind)
     possible_solves.append(ind)
     fitness_solves.append(fitness(ind))
     fitness_count += 1
