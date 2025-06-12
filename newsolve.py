@@ -1,4 +1,6 @@
 import random
+import matplotlib.pyplot as plt
+
 
 def decimal_to_binary_string(number, num_bits=3):
     """Convert a decimal number to a binary string."""
@@ -319,6 +321,7 @@ print(f"Total executions: {num_executions}")
 print(f"Executions converged: {convergence_count} / {num_executions}")
 print(f"Convergence rate: {convergence_count / num_executions * 100:.2f}%")
 print(f"Average final best fitness: {sum(all_final_best_fitnesses) / num_executions:.2f}")
+print(f"Average final fitness: {sum(all_final_avg_fitnesses) / num_executions:.2f}")
 print(f"Average interactions for all runs: {total_interactions / num_executions:.2f}")
 print(f"Average fitness evaluations for all runs: {total_fitness_evals / num_executions:.2f}")
 print(f"Overall best fitness found: {best_fitness_overall}")
@@ -327,4 +330,20 @@ if best_solution_overall:
     print(f"Overall best solution (bit string): {permutation_to_bit_string(best_solution_overall)}")
     print("\nBoard for overall best solution:")
     print_board(best_solution_overall)
+print("="*50)
+
+x = []
+sum_avg =[]
+for i in range(num_executions):
+    x.append(i + 1)
+    sum_avg.append(sum(all_final_avg_fitnesses)/(num_executions))
+
+plt.plot(x, all_final_avg_fitnesses)
+plt.plot(x, sum_avg)
+plt.title('all final average fitness x interaction')
+plt.xlabel('interaction')
+plt.ylabel('average fitness')
+plt.legend()
+plt.show()
+
 print("="*50)
