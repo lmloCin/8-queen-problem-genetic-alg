@@ -21,14 +21,14 @@ def bit_string_to_permutation(bit_string, num_bits_per_gene=3):
     return permutation
 
 def create_fathers():
-    prob_solve = []
-    p_vals = [0, 1, 2, 3, 4, 5, 6, 7]
+    father = ''
+    p_vals = ['000', '001', '010', '011', '100', '101', '110', '111']
     for i in range(8):
         random_num = random.choice(p_vals)
         p_vals.remove(random_num)
-        prob_solve.append(random_num)
+        father += random_num
 
-    return prob_solve
+    return father
 
 
 def fitness(ind):
@@ -188,80 +188,143 @@ def print_board(board):
     print()
 
 
-fitness_count = 0
-possible_solves = []
-fitness_solves = []
-# Creating aleatory initial population of 100 individuals
-population = 100
-for i in range(population):
-    ind = create_fathers()
-    possible_solves.append(ind)
-    fitness_solves.append(fitness(ind))
-    fitness_count += 1
-
-avg_fit = sum(fitness_solves)/population
-best_fit = max(fitness_solves)
-best_sol = possible_solves[fitness_solves.index(best_fit)]
-print(f"Fitness médio_inicial: {avg_fit}\nFitness máximo_inicial: {best_fit}")
-
-
-interactions = 0
-# End condition: find solution or 10000 fitness evaluations
-while best_fit < 28 and fitness_count < 10000:
-    interactions += 1
-    sons = []
-    sons_fit = []
-    possibles_parents= []
-    possibles_parents_fitness = []
-
-    # Generate 2 sons for each generation
-    for j in range(0, 5):
-        # Tournament selection of 5 individuals
-        random_factor = random.randrange(0, 100)
-        possibles_parents.append(possible_solves[random_factor])
-        possibles_parents_fitness.append(fitness_solves[random_factor])
-    # Pick the best two parents
-    father = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
-    possibles_parents_fitness.remove(max(possibles_parents_fitness))
-    possibles_parents.remove(father)
-    mother = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
-    possibles_parents_fitness.remove(max(possibles_parents_fitness))
-    possibles_parents.remove(mother)
-
-    # Recombination probability = 90%
-    son1, son2 = cut_crossfill_crossover(father, mother, 90)
-    # Mutation probability = 40%
-    son1, son2 = mutation(son1, 40), mutation(son2, 40)
-
-    sons.append(son1)
-    sons_fit.append(fitness(son1))
-    sons.append(son2)
-    sons_fit.append(fitness(son2))
-    fitness_count += 2
-
- 
-    # Replace the worst individuals with the new individuals
-    for i in range(2):
-        worst_ind_fitness = min(fitness_solves)
-        worst_ind_index = fitness_solves.index(worst_ind_fitness)
-
-        fitness_solves.pop(worst_ind_index)
-        possible_solves.pop(worst_ind_index)
-
-    for i in range(2):
-        possible_solves.append(sons[i])
-        fitness_solves.append(sons_fit[i])
+def run_single_experiment():
+    fitness_count = 0
+    possible_solves = []
+    fitness_solves = []
+    population = 100
     
-    # Update best fitness
-    avg_fit = sum(fitness_solves)/population
-    best_fit = max(fitness_solves)  
-    best_sol = possible_solves[fitness_solves.index(best_fit)]
-    print(f"\nInteraction: {interactions} \nActual_Avg_Fitness : {avg_fit}\nActual_Best_Fitness: {best_fit}")
+    # Creating aleatory initial population of 100 individuals
+    for i in range(population):
+        ind = create_fathers()
+        ind = bit_string_to_permutation(ind)
+        possible_solves.append(ind)
+        fitness_solves.append(fitness(ind))
+        fitness_count += 1
 
-            
-avg_fit = sum(fitness_solves)/population
-best_fit = max(fitness_solves)
-best_sol = possible_solves[fitness_solves.index(best_fit)]
-best_sol_bit_string = permutation_to_bit_string(best_sol)
-print(f'\nInteractions number: {interactions} \nFitness_count: {fitness_count} \nBest_solution: {best_sol} \nBest_fitness: {best_fit} \nAvg_end_fitness: {avg_fit} \nBest_solution_bit_string: {best_sol_bit_string}')
-print_board(best_sol)
+    avg_fit = sum(fitness_solves)/population
+    best_fit = max(fitness_solves)
+    best_sol = possible_solves[fitness_solves.index(best_fit)]
+    print(f"Fitness médio_inicial: {avg_fit}\nFitness máximo_inicial: {best_fit}")
+
+
+    interactions = 0
+    # End condition: find solution or 10000 fitness evaluations
+    while best_fit < 28 and fitness_count < 10000:
+        interactions += 1
+        sons = []
+        sons_fit = []
+        possibles_parents= []
+        possibles_parents_fitness = []
+
+        # Generate 2 sons for each generation
+        for j in range(0, 5):
+            # Tournament selection of 5 individuals
+            random_factor = random.randrange(0, population)
+            possibles_parents.append(possible_solves[random_factor])
+            possibles_parents_fitness.append(fitness_solves[random_factor])
+        # Pick the best two parents
+        father = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
+        possibles_parents_fitness.remove(max(possibles_parents_fitness))
+        possibles_parents.remove(father)
+        mother = possibles_parents[possibles_parents_fitness.index(max(possibles_parents_fitness))]
+        possibles_parents_fitness.remove(max(possibles_parents_fitness))
+        possibles_parents.remove(mother)
+
+        # Recombination probability = 90%
+        son1, son2 = cut_crossfill_crossover(father, mother, 90)
+        # Mutation probability = 40%
+        son1, son2 = mutation(son1, 40), mutation(son2, 40)
+
+        sons.append(son1)
+        sons_fit.append(fitness(son1))
+        sons.append(son2)
+        sons_fit.append(fitness(son2))
+        fitness_count += 2
+
+    
+        # Replace the worst individuals with the new individuals
+        for i in range(2):
+            worst_ind_fitness = min(fitness_solves)
+            worst_ind_index = fitness_solves.index(worst_ind_fitness)
+
+            fitness_solves.pop(worst_ind_index)
+            possible_solves.pop(worst_ind_index)
+
+        for i in range(2):
+            possible_solves.append(sons[i])
+            fitness_solves.append(sons_fit[i])
+        
+        # Update best fitness
+        avg_fit = sum(fitness_solves)/population
+        best_fit = max(fitness_solves)  
+        best_sol = possible_solves[fitness_solves.index(best_fit)]
+        print(f"\nInteraction: {interactions} \nActual_Avg_Fitness : {avg_fit}\nActual_Best_Fitness: {best_fit}")
+
+                
+    avg_fit = sum(fitness_solves)/population
+    best_fit = max(fitness_solves)
+    best_sol = possible_solves[fitness_solves.index(best_fit)]
+    best_sol_bit_string = permutation_to_bit_string(best_sol)
+    print(f'\nInteractions number: {interactions} \nFitness_count: {fitness_count} \nBest_solution: {best_sol} \nBest_fitness: {best_fit} \nAvg_end_fitness: {avg_fit} \nBest_solution_bit_string: {best_sol_bit_string}')
+    print_board(best_sol)
+
+    # ---- End of a single experiment ----
+
+    # Return results for analysis
+    converged = (int(best_fit) == 28)
+    return {
+        "converged": converged,
+        "interactions": interactions,
+        "fitness_count": fitness_count,
+        "final_best_fitness": best_fit,
+        "final_best_solution": best_sol,
+        "final_avg_fitness": avg_fit
+    }
+
+# ---- Main Analysis Loop ----
+num_executions = 30
+convergence_count = 0
+total_interactions = 0
+total_fitness_evals = 0
+all_final_best_fitnesses = []
+all_final_avg_fitnesses = []
+best_solution_overall = None
+best_fitness_overall = -1
+
+print(f"Starting {num_executions} executions...\n")
+
+for exec_num in range(1, num_executions + 1):
+    print(f"--- Execution {exec_num}/{num_executions} ---")
+    results = run_single_experiment()
+
+    if results["converged"]:
+        convergence_count += 1
+        print(f"  Converged! Interactions: {results['interactions']}, Fitness Evals: {results['fitness_count']}")
+    else:
+        print(f"  Did NOT converge. Interactions: {results['interactions']}, Fitness Evals: {results['fitness_count']}")
+
+    total_interactions += results["interactions"]
+    total_fitness_evals += results["fitness_count"]
+    all_final_best_fitnesses.append(results["final_best_fitness"])
+    all_final_avg_fitnesses.append(results["final_avg_fitness"])
+
+    if results["final_best_fitness"] > best_fitness_overall:
+        best_fitness_overall = results["final_best_fitness"]
+        best_solution_overall = results["final_best_solution"]
+
+print("\n" + "="*50)
+print("--- Overall Analysis Results ---")
+print(f"Total executions: {num_executions}")
+print(f"Executions converged: {convergence_count} / {num_executions}")
+print(f"Convergence rate: {convergence_count / num_executions * 100:.2f}%")
+print(f"Average final best fitness: {sum(all_final_best_fitnesses) / num_executions:.2f}")
+print(f"Average interactions for all runs: {total_interactions / num_executions:.2f}")
+print(f"Average fitness evaluations for all runs: {total_fitness_evals / num_executions:.2f}")
+print(f"Overall best fitness found: {best_fitness_overall}")
+if best_solution_overall:
+    print(f"Overall best solution (decimal): {best_solution_overall}")
+    print(f"Overall best solution (bit string): {permutation_to_bit_string(best_solution_overall)}")
+    print("\nBoard for overall best solution:")
+    print_board(best_solution_overall)
+print("="*50)
