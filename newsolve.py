@@ -190,11 +190,20 @@ def print_board(board):
     print()
 
 
+def standart_deviation(indv):
+    indv_minus_average_and_square = []
+    for i in indv:
+        indv_minus_average_and_square.append((i-(sum(indv)/len(indv)))**2)
+    return (sum(indv_minus_average_and_square)/len(indv_minus_average_and_square)- 1)**0.5
+
+
+
 def run_single_experiment():
     fitness_count = 0
     possible_solves = []
     fitness_solves = []
     population = 100
+    true_solves = 0
     
     # Creating aleatory initial population of 100 individuals
     for i in range(population):
@@ -261,15 +270,19 @@ def run_single_experiment():
         avg_fit = sum(fitness_solves)/population
         best_fit = max(fitness_solves)  
         best_sol = possible_solves[fitness_solves.index(best_fit)]
-        print(f"\nInteraction: {interactions} \nActual_Avg_Fitness : {avg_fit}\nActual_Best_Fitness: {best_fit}")
+       # print(f"\nInteraction: {interactions} \nActual_Avg_Fitness : {avg_fit}\nActual_Best_Fitness: {best_fit}")
 
                 
     avg_fit = sum(fitness_solves)/population
     best_fit = max(fitness_solves)
     best_sol = possible_solves[fitness_solves.index(best_fit)]
     best_sol_bit_string = permutation_to_bit_string(best_sol)
-    print(f'\nInteractions number: {interactions} \nFitness_count: {fitness_count} \nBest_solution: {best_sol} \nBest_fitness: {best_fit} \nAvg_end_fitness: {avg_fit} \nBest_solution_bit_string: {best_sol_bit_string}')
-    print_board(best_sol)
+    # count the number of boards that converged
+    for i in fitness_solves:
+        if i == 28:
+            true_solves += 1
+    #print(f'\nInteractions number: {interactions} \nFitness_count: {fitness_count} \nBest_solution: {best_sol} \nBest_fitness: {best_fit} \nAvg_end_fitness: {avg_fit} \nBest_solution_bit_string: {best_sol_bit_string}')
+    #print_board(best_sol)
 
     # ---- End of a single experiment ----
 
@@ -281,18 +294,20 @@ def run_single_experiment():
         "fitness_count": fitness_count,
         "final_best_fitness": best_fit,
         "final_best_solution": best_sol,
-        "final_avg_fitness": avg_fit
+        "final_avg_fitness": avg_fit,
+        "final_board_converged": true_solves
     }
 
 # ---- Main Analysis Loop ----
 num_executions = 30
 convergence_count = 0
-total_interactions = 0
+total_interactions = []
 total_fitness_evals = 0
 all_final_best_fitnesses = []
 all_final_avg_fitnesses = []
 best_solution_overall = None
 best_fitness_overall = -1
+total_final_boards_converged = 0
 
 print(f"Starting {num_executions} executions...\n")
 
@@ -306,10 +321,11 @@ for exec_num in range(1, num_executions + 1):
     else:
         print(f"  Did NOT converge. Interactions: {results['interactions']}, Fitness Evals: {results['fitness_count']}")
 
-    total_interactions += results["interactions"]
+    total_interactions.append(results["interactions"])
     total_fitness_evals += results["fitness_count"]
     all_final_best_fitnesses.append(results["final_best_fitness"])
     all_final_avg_fitnesses.append(results["final_avg_fitness"])
+    total_final_boards_converged += results["final_board_converged"]
 
     if results["final_best_fitness"] > best_fitness_overall:
         best_fitness_overall = results["final_best_fitness"]
@@ -322,8 +338,12 @@ print(f"Executions converged: {convergence_count} / {num_executions}")
 print(f"Convergence rate: {convergence_count / num_executions * 100:.2f}%")
 print(f"Average final best fitness: {sum(all_final_best_fitnesses) / num_executions:.2f}")
 print(f"Average final fitness: {sum(all_final_avg_fitnesses) / num_executions:.2f}")
-print(f"Average interactions for all runs: {total_interactions / num_executions:.2f}")
+print(f"Avarage Fitness standard deviation: {standart_deviation(all_final_avg_fitnesses):.2f}")
+print(f"Average interactions for all runs: {sum(total_interactions) / num_executions:.2f}")
+print(f"Interactions standard deviation: {standart_deviation(total_interactions):.2f}")
 print(f"Average fitness evaluations for all runs: {total_fitness_evals / num_executions:.2f}")
+print(f"Total boards that converged: {total_final_boards_converged}")
+print(f"Avarage boards that converged: {total_final_boards_converged/num_executions:.2f}")
 print(f"Overall best fitness found: {best_fitness_overall}")
 if best_solution_overall:
     print(f"Overall best solution (decimal): {best_solution_overall}")

@@ -116,7 +116,7 @@ while best_fit < 28 :
     interactions += 1
     sons = []
     sons_fit = []
-    for i in range(10):
+    for i in range(5):
         chance = random.randrange(1,5)
         if chance == 1:
             father = possible_solves[random.randrange(0, 2)]
