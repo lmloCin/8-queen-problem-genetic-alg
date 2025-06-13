@@ -360,6 +360,23 @@ for i in range(num_executions):
     sum_avg.append(sum(all_final_avg_fitnesses)/(num_executions))
     sum_int.append(sum(total_interactions)/(num_executions))
 
+
+
+text = ("--- Overall Analysis Results ---\n"
+f"Total executions: {num_executions}\n"
+f"Executions converged: ({convergence_count} / {num_executions})\n"
+f"Convergence rate: {convergence_count / num_executions * 100:.2f}%\n"
+f"Average final best fitness: {sum(all_final_best_fitnesses) / num_executions:.2f}\n"
+f"Average final fitness: {sum(all_final_avg_fitnesses) / num_executions:.2f}\n"
+f"Avarage Fitness standard deviation: {standart_deviation(all_final_avg_fitnesses):.2f}\n"
+f"Average interactions for all runs: {sum(total_interactions) / num_executions:.2f}\n"
+f"Interactions standard deviation: {standart_deviation(total_interactions):.2f}\n"
+f"Average fitness evaluations for all runs: {total_fitness_evals / num_executions:.2f}\n"
+f"Total boards that converged: {total_final_boards_converged}\n"
+f"Avarage boards that converged: {total_final_boards_converged/num_executions:.2f}\n"
+f"Overall best fitness found: {best_fitness_overall}")
+
+# first graph
 plt.figure(figsize = ((12, 6)))
 plt.subplot(1, 2, 1)
 plt.title('runs x all final average fitness')
@@ -367,6 +384,9 @@ plt.plot(x, all_final_avg_fitnesses)
 plt.plot(x, sum_avg)
 plt.xlabel('runs')
 plt.ylabel('average fitness')
+plt.grid(True, linestyle='--', alpha=0.6)
+
+# second graph
 plt.subplot(1, 2, 2)
 plt.title("runs x all final interactions", fontsize = 16)
 plt.plot(x, total_interactions)
@@ -374,6 +394,14 @@ plt.plot(x, sum_int)
 plt.xlabel('runs')
 plt.ylabel('interactions')
 plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
+
+
+plt.subplots_adjust(bottom=0.50)
+
+plt.figtext(0.5, 0.05, text, ha="center", fontsize=10, 
+            bbox={"facecolor":"lightgray", "alpha":0.5, "pad":6})
+
 plt.show()
 
 print("="*50)
