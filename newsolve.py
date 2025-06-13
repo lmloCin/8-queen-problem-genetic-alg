@@ -354,15 +354,25 @@ print("="*50)
 
 x = []
 sum_avg =[]
+sum_int = []
 for i in range(num_executions):
     x.append(i + 1)
     sum_avg.append(sum(all_final_avg_fitnesses)/(num_executions))
+    sum_int.append(sum(total_interactions)/(num_executions))
 
+plt.figure(figsize = ((12, 6)))
+plt.subplot(1, 2, 1)
+plt.title('runs x all final average fitness')
 plt.plot(x, all_final_avg_fitnesses)
 plt.plot(x, sum_avg)
-plt.title('all final average fitness x interaction')
-plt.xlabel('interaction')
+plt.xlabel('runs')
 plt.ylabel('average fitness')
+plt.subplot(1, 2, 2)
+plt.title("runs x all final interactions", fontsize = 16)
+plt.plot(x, total_interactions)
+plt.plot(x, sum_int)
+plt.xlabel('runs')
+plt.ylabel('interactions')
 plt.legend()
 plt.show()
 
