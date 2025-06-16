@@ -202,12 +202,12 @@ def run_single_experiment():
     fitness_count = 0
     possible_solves = []
     fitness_solves = []
-    population = 100
+    population = 20
     true_solves = 0
     
     # Creating aleatory initial population of 100 individuals
     for i in range(population):
-        ind = create_fathers()
+        ind = create_fathers(n)
         ind = bit_string_to_permutation(ind)
         possible_solves.append(ind)
         fitness_solves.append(fitness(ind))
