@@ -55,3 +55,6 @@ toda a população convergir?
 - firsthalf.py --> Solução da primeira parte do projeto
 - secondhalf.py --> Solução para a segunda parte do projeto (em andamento)
 - inteligent_c_m.py --> Resolução tentando conceitos de mutação e geração de pais de forma mais inteligente
+- secondhalf.py --> Resolução utilizando torneio binário e seleção geracional
+- secondhalf_inteligent.py --> Resolução juntando as melhorias de secondhalf.py e inteligent_c_m.py
+- secondhalf_n_inteligent.py --> Uso da resolução de secondhalf_inteligent.py aplicado a N rainhas em um tabuleiro NxN
