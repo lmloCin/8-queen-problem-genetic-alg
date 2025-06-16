@@ -303,7 +303,7 @@ def run_single_experiment():
     fitness_count = 0
     possible_solves = []
     fitness_solves = []
-    population = 100
+    population = 20
     true_solves = 0
     
     # Creating aleatory initial population of 100 individuals
